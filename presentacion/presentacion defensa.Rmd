@@ -1,9 +1,9 @@
 ---
-title: "Paradatos y calidad de información recolectada en estadísticas oficiales:"
-subtitle: "Aplicaciones dentro de II ENUT"  
+title: "Seminario II:"
+subtitle: "Aprovechamiento de paradatos en II ENUT"  
 author: 
   - "Joaquín E. Galdames Hernández"
-date: '18 de Julio de 2024'
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   xaringan::moon_reader:
     css: "xaringan-themer.css"
@@ -182,110 +182,7 @@ knitr::opts_chunk$set(
 
 # Demanda Institucional
 
-## .content-box-purple[Sistematizar la utilización de los paradatos de la II ENUT con el fin de optimizar la supervisión de futuras encuestas.]
-
-
----
-
-class: inverse, middle
-
-<br>
-<br>
-
-`r fontawesome::fa("book", height = "3em", fill = "white")`
-
-# Antecedentes y justificación del estudio
-
----
-
-### Encuesta Nacional Sobre Uso del Tiempo (ENUT)
-
-.panelset[
-.panel[.panel-name[¿Qué es la ENUT?]
-La Encuesta Nacional Sobre Uso del Tiempo (ENUT) es una medición que permite *“caracterizar el tiempo destinado por las personas a las distintas actividades de la vida diaria, como el trabajo remunerado, el trabajo no remunerado y las actividades personales”* (INE, 2024). 
-
-
-```{r print-plot, echo=F, include = T, warning=F, out.width="80%", fig.align='center'}
-print(plot)
-```
-]
-.panel[.panel-name[II ENUT]
-Con motivo de tener una actualización de este tipo de información se realizó la recolección oficial de la II ENUT, durante los meses de agosto a diciembre del año 2023. Esta encuesta tiene un muestreo con una representatividad urbana y por sexo dentro de todas las regiones del país y tiene una muestra objetivo de 15.490 viviendas para las cuales se necesitó un total de 390 personas encuestadoras.
-
-<div style="display: flex; justify-content: space-between;">
-
-  <div style="text-align: center; margin-right: 10px;">
-    <img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/ch.png" style="width: 40%; height: auto;">
-    <p>Cuestionario del Hogar (CH)</p>
-  </div>
-
-  <div style="text-align: center; margin-left: 10px;">
-    <img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/cut.png" style="width: 40%; height: auto;">
-    <p>Cuestionario Sobre Uso del Tiempo (CUT) </p>
-  </div>
-
-</div>
-]
-
-.panel[.panel-name[Recolección en Tablet]
-
-Desde 2020, con el fin de evitar la aplicación de encuestas en papel y la digitación de sus respuestas, se tomó la decisión de realizar las distintas recolecciones de manera digital a través de Tablet o DMC (Dispositivo móvil de captura). Para esto, se ha trabajado preferentemente con la plataforma de Survey Solutions, patrocinada por el Banco Mundial. 
-
-Esta decisión institucional ha planteado un variopinto de desafíos para todos los equipos y estamentos que forman parte de la institución.
-
-  ]
-]
-
----
-
-### ¿Y por qué es importante esta decisión?
-
-<p class="slide-in">
-  <img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/paradatos.gif" style="display: block; margin: 0 auto; width: 40%; height: 40%;">
-</p>
-
-
----
-
-### Paradatos
-
-Información recolectada durante el proceso de aplicación de un instrumento (Callegaro, 2013). 
-
-Entre algunos de los elementos a identificar está el orden en qué se responde una pregunta, la fecha y hora de la respuesta o también, el momento en que se inicia o sincronizan las respuestas para enviar la información hacia los servidores donde se alojan las respuestas (Olson & Parkhurst, 2013).
-
-El aprovechamiento de los paradatos, como herramienta de supervisión, permite lidiar de alguna forma con el error de recolección y trabajar con una mejor calidad del dato recolectado (Lyberg, Lynn, & Schouten, 2022). Ya sea promovimiendo prácticas de supervisión durante la recolección del dato o en el posterior procesamiento de información, ya sea imputando valores o verificando la información que fue entregada con anterioridad.
-
----
-### Proceso de Producción Estadística
-
-.panelset[
-.panel[.panel-name[GSBPM]
-
-El INE, al ser el organismo encargado de la operación estadística del país, se rige por distintos procesos o flujos que permiten hacer una comparación con distintas oficinas nacionales de estadística de otros países. Esto es importante ya que contribuye a estandarizar el proceso de producción estadística. 
-
-En particular, la institución se rige bajo el GSBPM (Generic Statistical Business Process Model) como marco de referencia. Este marco fue creado por Naciones Unidas y permite diferenciar entre procesos, los cuales son posibles de desgranar en distintos subprocesos.
-]
-.panel[.panel-name[Etapas de la Producción Estadística]
-
-<img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/gsbpm2.png" style="display: block; margin: 0 auto; width: 80%; height: 80%;">
-<p>Fuente: UNECE (2016)</p>
-
-]
-.panel[.panel-name[Ejecución de Recolección]
-
-<img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/4.3ejec recoleccion.png" style="display: block; margin: 0 auto; width: 80%; height: 80%;">
-<p>Fuente: INE (2021)</p>
-
-]
-
-.panel[.panel-name[Ejecutar Supervisión]
-
-<img src="https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/etapa 3. ejeuc super.png" style="display: block; margin: 0 auto; width: 80%; height: 80%;">
-<p>Fuente: INE (2021)</p>
-]
-]
-
-
+## .content-box-purple[Sistematizar la utilización de los paradatos de la II ENUT con el fin de optimizar futuras mediciones.]
 
 ---
 
@@ -301,22 +198,27 @@ class: inverse, middle
 
 ---
 
-name: pregunta
+name: enfoque
 
-## Pregunta de Investigación
+## Pregunta y objetivos de investigación
 
-- ¿Qué características de la recolección de la II ENUT son posibles de encontrar mediante la utilización de paradatos como herramienta de supervisión?
+.panelset[
+.panel[.panel-name[Pregunta de Investigación ]
 
-## Objetivos
+❓aNOTAR AQUÍ LA PREGUNTA DE INV
 
-- Objetivo General
+]
+.panel[.panel-name[Objetivos]
 
- - Explorar características de la recolección de la II ENUT a través de la utilización de los paradatos como herramienta de supervisión.
+- Objetivo General: 
+XXXXX.
 
-- Objetivos Específicos
+- Objetivos Específicos: 
+ - Objetivo 1 XXXX
+ - Objetivo 1 XXXX
 
- - Caracterizar los distintos tipos de errores en la recolección de la II ENUT a través del uso de paradatos.
- - Describir cómo se relacionan estos errores con la experiencia de las personas encuestadoras de la II ENUT. 
+]
+]
 
 ---
 
@@ -325,94 +227,40 @@ class: inverse, middle
 <br>
 <br>
 
-`r fontawesome::fa("lightbulb", height = "3em", fill = "white")`
+`r fontawesome::fa("list", height = "3em", fill = "white")`
 
-# Planteamiento metodológico
+# Operacionalización
 
 
 ---
 name: enfoque
 
-## Planteamiento metodológico I
+## Operacionalización
 
-.panelset[
-.panel[.panel-name[Enfoque y alcance del estudio]
+AQUÍ PONER ALGO SOBRE LA OPERACIONALIZACIÓN
 
-El presente estudio presenta un enfoque cuantitativo, ya que considera que las variables que se desean medir son posibles de analizar bajo procedimientos estadísticos (Creswell, 2009). Bajo este ámbito, el análisis de los paradatos de la II ENUT invita a pensar los datos de forma distinta, es decir, desarrollar la imaginación estadística al tratar de buscar resultados (Ritchey, 2006). 
-
-Conforme a los alcances de la investigación, el proyecto se mueve dentro de dos tipos: exploratoria y descriptiva. Para esto se utilizan las definiciones de Padua (2018):
-
-- Exploratorio a nivel institucional ya que aún no existen directrices o documentaciones que den cuenta de la utilización de paradatos. 
-
-- Descriptivo puesto que parte por esquemas y formas de trabajo preestablecidas, en donde el diagnóstico es más fácil de constreñir. En este sentido es posible apoyarse sobre la bibliografía respecto a la reducción de los errores no muestrales y/o errores de medición.
-
-]
-.panel[.panel-name[Unidad de Análisis y Fuente de Info]
-
-- Unidad de análisis: Distintas interacciones que se generan en cada entrevista. En este sentido, el foco de la unidad de análisis puede ir cambiando según cuál es el indicador que se está levantando.
-
-- Fuente Principal: Base que contiene los paradatos. Esta base se creó al momento de llenar la información dentro de los distintos cuestionarios de II ENUT, por lo cual es posible señalar que ya se encuentra “recolectada”.
-
-- Fuente Secundaria: Estructura de los grupos de recolección y a características de las personas que encuestaron dentro de la II ENUT, por nombrar algún ejemplo.
-
-- Software/Programa: RStudio 
-
-⚠️ 
-Asimismo, y al considerar que la información es un bien de uso público y que el Instituto Nacional de Estadísticas se encuentra regido por la Ley 17.374  (Chile, 1970), la cual hace referencia al Secreto Estadístico.
+---
 
 
-]
-]
+class: inverse, middle
 
+<br>
+<br>
+
+`r fontawesome::fa("file", height = "3em", fill = "white")`
+
+# Fuente de Información
 
 
 ---
-name: fuente de info
 
-## Planteamiento metodológico II
+## Fuente de Información - Paradatos
 
 .panelset[
-.panel[.panel-name[Formato Paradatos]
+.panel[.panel-name[Características Paradatos]
 
-Información disponible en archivo paradatos Survey Solutions
-```{r suso, echo=FALSE, include = T, out.width="80%"}
-
-table_suso <- data.frame(
-  Variable = c("interview__id", "order", "event", "responsible", "role", "timestamp_utc", "tz_offset", "Parameters"),
-  Definición = c(
-    "Identificador único creado por Survey Solutions. En este caso corresponde a un hogar.",
-    "Número correlativo de cada acción realizada en un interview__id determinado.",
-    "Clasificación del evento o interacción realizada",
-    "Nombre del usuario que realizó el evento",
-    "Rol de la persona mencionada en la columna de responsable. En esta columna es posible identificar encuestadores o supervisores.",
-    "Fecha y hora cuando ocurrió en el evento en huso horario UTC.",
-    "Diferencia horaria (relativo a huso UTC)",
-    "En esta columna se guarda cuál fue la respuesta añadida/borrada"
-  ),
-  Ejemplo = c(
-    "53fb5b4bb4b04626a010b08236bcbfd1",
-    "1",
-    "AnswerSet",
-    "999999999-0",
-    "1",
-    "2018-12-28T23:00:59.123",
-    "-05:00:00",
-    "c2||3||"
-  )
-)
-
-table_suso  %>%
-  kable(col.names =c("Variable", "Definición", "Ejemplo")) %>%
-  kable_styling(full_width = TRUE, 
-                bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
-                font_size = 15, 
-                fixed_thead = TRUE) %>% 
-  footnote(general = "Fuente: Elaboración propia a raíz de información en página web de Survey Solutions (2024)",
-           general_title = "")
-
-```
-
-Para mayor información revisar: https://docs.mysurvey.solutions/headquarters/export/paradata_file_format/ 
+DESCRIBIR CUÁNTAS FILAS SON ETC
+QUE SE VA A ANALIZAR EN R Y DECIR EN QUÉ ESTOY ACTUALMENTE
 
 ]
 .panel[.panel-name[Ejemplo de Paradatos]
@@ -438,79 +286,7 @@ test_data %>%
 ]
 ]
 
----
-name: tecnicas
 
-## Planteamiento metodológico III
-
-.panelset[
-.panel[.panel-name[Técnicas por utilizar]
-
-
-- _Preponderante_ corresponde a análisis de índole descriptivos; univariados y bivariados.
-
-- _Complementar_: A través de métodos de interdependencia. Ideal reducir información a través de un cluster de k-medias
-
-- _Principal dificultad_: Inexperiencia a nivel institucional y personal.
-
-
-
-]
-.panel[.panel-name[Operacionalización tentativa]
-
-```{r opera, echo=FALSE, include = T, out.width="80%"}
-
-table_opera <- data.frame(
-  Dimensión = c(
-    "Tiempos y horarios de aplicación", #1 
-    NA, #2 
-    "Errores de aplicación - CH", #3
-    NA, #4
-    "Errores de aplicación - CUT", #5 
-    "Revisión de comentarios", #7
-    "Flujo de aplicación", #9
-    NA, #10
-    NA #11
-    ),
-  Subdimensión = c(
-    "Tiempos de aplicación de Encuesta", #1
-    "Horarios de aplicación de encuesta", #2
-    "Borrado de integrantes", #3
-    "Cambio de respuestas en variables claves", #4 
-    "Cambio de respuestas en preguntas de tiempo", #5 
-    "Revisión de comentarios", #7 
-    "Flujo de aplicación CH", #9 
-    "Flujo de aplicación CUT", #10
-    "Flujo de aplicación general" #11
-    ),
-  Definición.objetivo.conceptual = c(
-    "Medir tiempo de aplicación tanto de CH y CUT.", #1
-    "Encontrar tiempos en dónde la aplicación de CH y CUT resultó más exitosa.", #2
-    "El borrado de integrantes afectaba al correcto funcionamiento de la encuesta en Survey Solutions.", #3
-    "Al momento de cambiar preguntas claves del CH es posible afectar saltos dentro del CUT. Por ejemplo, una de estas variables claves corresponde a la situación educacional de algún integrante.", #4
-    "Identificar en preguntas de tiempo dedicado a las actividades cuáles fueron las preguntas que presentaron mayores cambios en el tiempo declarado.", #5
-    "Chequear cuáles fueron las preguntas tanto de CH y CUT que recibieron mayores comentarios tanto por personas encuestadoras como por sus encargados. Con el fin de determinar cuáles pudieron ser las preguntas más complejas de la medición.", #7
-    "Graficar cuáles fueron los flujos de cada cuestionario por separado y de forma integrada.", #9
-    NA, #10
-    NA #11 
-  )) %>%
-  fill(Dimensión, .direction = "down") %>% 
-  fill(Definición.objetivo.conceptual, .direction = "down")
-
-# Generación de la tabla con celdas fusionadas
-table_opera %>%
-  kable(col.names = c("Dimensión", "Subdimensión", "Definición/objetivo conceptual")) %>%
-  kable_styling(full_width = TRUE, 
-                bootstrap_options = c("striped", "hover", "condensed", "responsive"), 
-                font_size = 15, 
-                fixed_thead = TRUE) %>%
-  collapse_rows(columns = c(1, 3), valign = "middle") 
-
-```
-
-
-]
-]
 
 
 ---
@@ -520,141 +296,17 @@ class: inverse, middle
 <br>
 <br>
 
-`r fontawesome::fa("award", height = "3em", fill = "white")`
+`r fontawesome::fa("hourglass-half", height = "3em", fill = "white")`
 
-# Resultados Esperados
-
-
----
-name: resultados esperados
-
-## Resultados Esperados
-
-Como fue señalado dentro de la demanda institucional, este proyecto se enmarca en la sistematización del uso de paradatos en la II ENUT. Por lo cual se piensa en estos dos tipos de producto:
-
-
-- _Informe de aplicación de paradatos_: Documento donde básicamente se anotan las experiencias y los aprendizajes. Considerando tanto elementos que se escapen dentro del desarrollo de esta tesis de magíster como de los hallazgos que estarán en la versión final del documento.
-
-- _Documento de trabajo_: En el sitio web de la institución se presentan este tipo de archivo que corresponde a una sistematización metodológica sobre algún elemento en particular. Este documento presenta autoría y es revisado internamente por algún colega dentro de la institución. URL de Referencia (https://www.ine.gob.cl/inicio/documentos-de-trabajo)
-
+# Análisis Dimensión: Tiempos de Duración
 
 ---
 
-class: inverse, middle
+name: Análisis 
 
-<br>
-<br>
-
-`r fontawesome::fa("calendar-days", height = "3em", fill = "white")`
-
-# Cronograma de Trabajo
-
----
-
-A continuación se presenta un cronograma tentativo del proyecto
-
-```{r, echo=F, include = T, out.width="100%", fig.align='center'}
-data_gantt <- data.frame(
-  Actividad = c("Entrega Informe N° III - Diseño", #1
-                "Presentación de Defensa - Diseño", #2
-                "Correcciones de Defensa", #3
-                "Procesamiento de paratados", #4 
-                "Enriquecimiento de paratados", #5
-                "Análisis preliminares - Programación", #6 
-                "Análisis preliminares - Escritura", #7
-                "Anomización de datos", #8
-                "Escritura de documento de tesis"), #9
-  Inicio = as.Date(c("2024-07-01", #1
-                     "2024-07-18", #2
-                     "2024-07-18", #3 
-                     "2024-08-01", #4
-                     "2024-08-01", #5 
-                     "2024-08-21", #6
-                     "2024-09-11", #7
-                     "2024-09-11", #8
-                     "2024-09-02")), #9
-  Fin = as.Date(c("2024-07-02", #1
-                  "2024-07-19", #2
-                  "2024-08-10", #3
-                  "2024-08-20", #4
-                  "2024-08-20", #5
-                  "2024-09-20", #6
-                  "2024-10-26", #7
-                  "2024-11-05", #8
-                  "2024-11-29")), #8
-  Completo = c(100, 
-               100, 
-               0, 
-               50, 
-               50, 
-               0, 
-               0, 
-               0,
-               0)
-)
-
-# Ajustar los niveles para mantener el orden en el gráfico
-data_gantt$Actividad <- factor(data_gantt$Actividad, levels = rev(data_gantt$Actividad))
-
-# Crear el gráfico de Gantt
-ggplot(data_gantt, aes(x = Inicio, xend = Fin, y = Actividad, yend = Actividad)) +
-  geom_segment(size = 5, aes(color = as.factor(Completo))) +
-  scale_color_manual(values = c("0" = "lightgrey", "50" = "#7B68EE", "100" = "#43418A")) +
-  labs(title = "Cronograma de Trabajo",
-       x = NULL,
-       y = NULL,
-       color = "Porcentaje completitud") +
-  theme_minimal()
-
-```
+## Tiempos de duración
 
 
-
----
-
-name: referencias1
-
-## Referencias I
-
-<!-- Máximo 7 por slide (necesario recortar al final) -->
-
-- Callegaro, M. (2013). Paradata in web surveys. En F. Kreuter, Improving surveys with paradatas (págs. 339-359). New Jersey: John Wiley & Sons, Inc.
-
-- Chile. (1970). Ley 17.374: Establece el Instituto Nacional de Estadísticas. Santiago: Biblioteca del Congreso Nacional de Chile.
-
-- Creswell, J. (2009). Research design: qualitative, quantitative and mixed methods approaches. California: Sage Publications.
-
-- de Leeuw, E., Hox, J., & Snijkers, G. (1995). The effect of computer-assisted interviewing on data quality. A review. Market Research Society. Journal., 37(4), 1-19.
-
-
-- INE. (2016). Documento de Principales Resultados ENUT 2015. Santiago.
-
-- INE. (2021). Manual de Procedimiento: Subproceso ejecutar, supervisar y finalizar la recolección de datos. Santiago.
-
-- INE. (2024). Manual de Trabajo de Campo II ENUT. 
-
-- INE. (26 de Abril de 2024). Micrositio sobre II ENUT. Obtenido de https://www.ine.gob.cl/enut
-
----
-
-name: referencias2
-
-## Referencias II
-
-- Lyberg, L., Lynn, P., & Schouten, B. (2022). Mode issues in comparative surveys. En P. Lynn, & L. Lyberg, Improving the measurement of poverty and social exclusion in Europe: reducing non-sampling errors (págs. 321-336). Luxembourg: Publications Office of the European Union.
-
-- Olson, K., & Parkhurst, B. (2013). Collecting paradata for measurement error evalutions. En F. Kreuter, Improving surveys with paradatas (págs. 43-72). New Jersey: John Wiley & Sons, Inc.
-
-- Padua, J. (2018). Técnicas de investigación aplicadas a las ciencias sociales. Ciudad de México: Fondo de Cultura Económica.
-
-- Ritchey, F. (2006). Estadística para las ciencias sociales. Ciudad de México: McGraw-Hill Interamericana.
-
-- Sierra Bravo, R. (2001). Técnicas de investigación social: Teoría y ejercicios. Madrid: Paraninfo.
-
-- Survey Solutions. (02 de Junio de 2024). Obtenido de Sitio de Survey Solutions: https://mysurvey.solutions/es/
-Survey Solutions. (02 de Junio de 2024). Paradata file format. Obtenido de https://docs.mysurvey.solutions/headquarters/export/paradata_file_format/
-
-- UNECE. (2016). Modelo genérico del proceso estadístico: GSBPM. Obtenido de https://unece.org/fileadmin/DAM/stats/documents/ece/ces/ge.58/2016/mtg4/Paper_8_GSBPM_5.0_v1.1.pdf
 
 ---
 
@@ -663,5 +315,5 @@ class: inverse, center
 # ¡Gracias por su tiempo! 🐱
 
 ```{r ciro-image, out.width='70%', echo = F, fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/ciro2.JPG")
+knitr::include_graphics("https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/000024.JPG")
 ```
