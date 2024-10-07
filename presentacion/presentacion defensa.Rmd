@@ -315,5 +315,5 @@ class: inverse, center
 # ¡Gracias por su tiempo! 🐱
 
 ```{r ciro-image, out.width='70%', echo = F, fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/joakonib/defensa_tesis/main/assets/logo/000024.JPG")
+knitr::include_graphics("https://raw.githubusercontent.com/joakonib/seminario_ii/main/assets/logo/000024.JPG")
 ```
