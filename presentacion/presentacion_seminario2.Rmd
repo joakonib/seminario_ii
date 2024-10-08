@@ -3,7 +3,7 @@ title: "Seminario II:"
 subtitle: "Aprovechamiento de paradatos en II ENUT"  
 author: 
   - "Joaquín E. Galdames Hernández"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "08/10/2024"
 output:
   xaringan::moon_reader:
     css: "xaringan-themer.css"
@@ -44,36 +44,6 @@ library(tidyverse)
 style_mono_accent(base_color = "#43418A")
 xaringan_mediocre(pal = "coty")
 xaringanExtra::use_panelset()
-```
-```{r plot, include=FALSE}
-library(ggplot2)
-
-# Datos de ejemplo
-datos <- data.frame(
-  Genero = c("Hombres", "Mujeres"),
-  Tiempo = c(2.74, 5.89),
-  Participacion = c(94.5, 98.4)
-)
-
-plot <- ggplot(datos, aes(x = Genero)) + 
-  geom_bar(aes(y = Tiempo), stat = "identity", fill = "#43418A", width = 0.4, position = position_dodge(width = 0.5)) +
-  geom_text(aes(y = Tiempo, label = Tiempo), vjust = -0.5, color = "#43418A", size = 5) +
-  geom_point(aes(y = Participacion / 10), color = "#43418A", size = 3, shape = 15) +  # Cambiar shape a 15 para usar cuadrados
-  geom_text(aes(y = Participacion / 10, label = paste0(Participacion, "%")), vjust = -0.4, color = "#43418A", size = 5) +
-  scale_y_continuous(
-    name = "Tiempo en horas",
-    sec.axis = sec_axis(~.*10, name = "Participación (%) Día Tipo"),  # Multiplicado por 10 para ajustar a la escala original
-    limits = c(0, 10)  # Aumentar el límite superior para que se vean bien las etiquetas
-  ) +
-  ylab(NULL) +
-  theme_minimal() +
-  theme(axis.title.x = element_blank()) +
-  labs(
-    caption = "Fuente: Resultados I ENUT, INE (2016)",
-    title = "Trabajo no remunerado en la población de 12 años y más según sexo"
-  )
-  
-
 ```
 
 ```{r setup, include=FALSE}
@@ -285,8 +255,16 @@ class: inverse, middle
 .panelset[
 .panel[.panel-name[Características Paradatos]
 
-DESCRIBIR CUÁNTAS FILAS SON ETC
-QUE SE VA A ANALIZAR EN R Y DECIR EN QUÉ ESTOY ACTUALMENTE
+### Características: 
+La base correspondiente a los paradatos consta de 18.110.629 filas, las cuales se reparten entre:
+ - 16.770 CH
+ - 46.454 CUT
+
+### Alcances de la base:
+
+Para llegar a esta base se consideraron solamente encuestas donde efectivamente se logró un contacto de forma correcta (se eliminan hogares falseados o mal levantados).
+ 
+Considera hogares que posteriormente fueron eliminados por criterios de suficiencia y calidad de los datos.
 
 ]
 .panel[.panel-name[Ejemplo de Paradatos]
@@ -308,7 +286,6 @@ test_data %>%
 
 ```
 
-
 ]
 ]
 
@@ -322,15 +299,21 @@ class: inverse, middle
 <br>
 <br>
 
-`r fontawesome::fa("hourglass-half", height = "3em", fill = "white")`
+`r fontawesome::fa("spinner", height = "3em", fill = "white")`
 
-# Análisis Dimensión: Tiempos de Duración
+# ¿En qué estoy trabajando?
 
 ---
 
-name: Análisis 
+name: WIP 
 
-## Tiempos de duración
+## Actualmente trabajando en:
+
+- Revisar código para tener una versión más limpia de la base. (Está OK, pero me gustaría chequearlo con calma)
+
+- Comenzando a programar resultados de dimensión 'Tiempo' para tener cálculos para Entrega V.
+
+- Leyendo bibliografía para complementar comentarios tutoría Jueves 3 de Octubre.
 
 
 
