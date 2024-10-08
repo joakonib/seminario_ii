@@ -175,17 +175,17 @@ name: enfoque
 .panelset[
 .panel[.panel-name[Pregunta de Investigación]
 
-## .content-box-purple[¿Qué características respecto a los tiempos de duración y el flujo de respuesta en la II ENUT son factibles de encontrar a través del aprovechamiento de los paradatos?]
+## .content-box-purple[¿Qué características respecto a los tiempos de duración y el flujo de respuesta en la II ENUT son se observan a través de los paradatos?]
 
 ]
 .panel[.panel-name[Objetivos]
 
 ### Objetivo General: 
-Explorar características de tiempo de duración y flujo de respuesta de la recolección de la II ENUT a través del uso de paradatos.
+Explorar las características de tiempos y flujos de respuesta de la recolección de la II ENUT a través del uso de paradatos.
 
 ###Objetivos Específicos: 
-- Caracterizar aplicaciones en la captura de respuestas de la II ENUT.
-- Describir los distintos tiempos de duración en la aplicación de la II ENUT según distintas conformaciones de hogar.
+- Caracterizar los tiempos y duración de la recolección de información a través de paradatos.
+- Indagar el orden y el flujo de respuestas en la recolección de información a través del uso de paradatos.
 
 ]
 ]
@@ -319,7 +319,7 @@ name: WIP
 
 - Definir con contraparte interna las distintas conformaciones de hogar (Hay borrador pero no está zanjado aún)
 
-
+- Hay una tipología de botones mal aplicados pero aún no la construyo en la base
 
 ---
 
