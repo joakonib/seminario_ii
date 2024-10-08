@@ -184,8 +184,8 @@ name: enfoque
 Explorar características de tiempo de duración y flujo de respuesta de la recolección de la II ENUT a través del uso de paradatos.
 
 ###Objetivos Específicos: 
-- Caracterizar aplicaciones en el llenado de respuestas de la II ENUT.
-- Describir los distintos tiempos de duración en la aplicación de la II ENUT.
+- Caracterizar aplicaciones en la captura de respuestas de la II ENUT.
+- Describir los distintos tiempos de duración en la aplicación de la II ENUT según distintas conformaciones de hogar.
 
 ]
 ]
@@ -213,9 +213,9 @@ A continuación se presenta una reformulación de la operacionalización.
  
 tabla <- data.frame(
   Dimensión = c("Tiempo (*)", "Tiempo (*)", "Tiempo (*)", "Tiempo (*)", "Flujo", "Flujo", "Flujo"),
-  Sub_dimensión = c("Mala aplicación de botones de tiempo", "Mala aplicación de botones de tiempo", 
-                    "Correcta aplicación de botones de tiempo", "Correcta aplicación de botones de tiempo",
-                    "Malos flujos de aplicación", "Malos flujos de aplicación", "Malos flujos de aplicación"),
+  Sub_dimensión = c("Correcta aplicación de botones de tiempo", "Correcta aplicación de botones de tiempo", 
+                    "Duración de encuesta", "Duración de encuesta",
+                    "Incorrecto flujo de respuesta", "Incorrecto flujo de respuesta", "Incorrecto flujo de respuesta"),
   Indicadores = c("Tipología de distintas malas aplicaciones CH",
                   "Tipología de distintas malas aplicaciones CUT",
                   "Medidas de Tendencia Central de tiempos de duración CH",
@@ -257,8 +257,13 @@ class: inverse, middle
 
 ### Características: 
 La base correspondiente a los paradatos consta de 18.110.629 filas, las cuales se reparten entre:
- - 16.770 CH
- - 46.454 CUT
+ - 16.770 CH (*)
+ - 46.454 CUT (**)
+ 
+Recordatorio:
+1. CH - Cuestionario del Hogar: Se aplica a todos los hogares. Es un cuestionario por hogar  
+2. CUT - Cuestionario sobre Uso del Tiempo: Se aplica a todos los integrantes del hogar mayores de 12 años
+
 
 ### Alcances de la base:
 
@@ -314,6 +319,8 @@ name: WIP
 - Comenzando a programar resultados de dimensión 'Tiempo' para tener cálculos para Entrega V.
 
 - Leyendo bibliografía para complementar comentarios tutoría Jueves 3 de Octubre.
+
+- Definir con contraparte interna las distintas conformaciones de hogar (Hay borrador pero no está zanjado aún)
 
 
 
