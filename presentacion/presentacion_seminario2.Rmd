@@ -261,16 +261,13 @@ La base correspondiente a los paradatos consta de 18.110.629 filas, las cuales s
  - 16.770 CH (*)
  - 46.454 CUT (**)
  
-Recordatorio:
-1. CH - Cuestionario del Hogar: Se aplica a todos los hogares. Es un cuestionario por hogar  
-2. CUT - Cuestionario sobre Uso del Tiempo: Se aplica a todos los integrantes del hogar mayores de 12 años
+CH - Cuestionario del Hogar: Se aplica a todos los hogares. Es un cuestionario por hogar  
+CUT - Cuestionario sobre Uso del Tiempo: Se aplica a todos los integrantes del hogar mayores de 12 años
 
 
 ### Alcances de la base:
 
 Para llegar a esta base se consideraron solamente encuestas donde efectivamente se logró un contacto de forma correcta (se eliminan hogares falseados o mal levantados).
- 
-Considera hogares que posteriormente fueron eliminados por criterios de suficiencia y calidad de los datos.
 
 ]
 .panel[.panel-name[Ejemplo de Paradatos]
