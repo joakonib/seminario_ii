@@ -1,4 +1,3 @@
-
 ---
 title: "Seminario II:"
 subtitle: "Aprovechamiento de paradatos en II ENUT"  
