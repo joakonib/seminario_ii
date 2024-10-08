@@ -203,19 +203,19 @@ name: enfoque
 ## Pregunta y objetivos de investigación
 
 .panelset[
-.panel[.panel-name[Pregunta de Investigación ]
+.panel[.panel-name[Pregunta de Investigación]
 
-❓aNOTAR AQUÍ LA PREGUNTA DE INV
+## .content-box-purple[¿Qué características respecto a los tiempos de duración y el flujo de respuesta en la II ENUT son factibles de encontrar a través del aprovechamiento de los paradatos?]
 
 ]
 .panel[.panel-name[Objetivos]
 
-- Objetivo General: 
-XXXXX.
+### Objetivo General: 
+Explorar características de tiempo de duración y flujo de respuesta de la recolección de la II ENUT a través del uso de paradatos.
 
-- Objetivos Específicos: 
- - Objetivo 1 XXXX
- - Objetivo 1 XXXX
+###Objetivos Específicos: 
+- Caracterizar aplicaciones en el llenado de respuestas de la II ENUT.
+- Describir los distintos tiempos de duración en la aplicación de la II ENUT.
 
 ]
 ]
@@ -237,7 +237,33 @@ name: enfoque
 
 ## Operacionalización
 
-AQUÍ PONER ALGO SOBRE LA OPERACIONALIZACIÓN
+A continuación se presenta una reformulación de la operacionalización.
+
+```{r tabla, echo = FALSE, include = TRUE, warning=F}
+ 
+tabla <- data.frame(
+  Dimensión = c("Tiempo (*)", "Tiempo (*)", "Tiempo (*)", "Tiempo (*)", "Flujo", "Flujo", "Flujo"),
+  Sub_dimensión = c("Mala aplicación de botones de tiempo", "Mala aplicación de botones de tiempo", 
+                    "Correcta aplicación de botones de tiempo", "Correcta aplicación de botones de tiempo",
+                    "Malos flujos de aplicación", "Malos flujos de aplicación", "Malos flujos de aplicación"),
+  Indicadores = c("Tipología de distintas malas aplicaciones CH",
+                  "Tipología de distintas malas aplicaciones CUT",
+                  "Medidas de Tendencia Central de tiempos de duración CH",
+                  "Medidas de Tendencia Central de tiempos de duración CUT",
+                  "Preguntas críticas llenadas de CH una vez iniciado CUT",
+                  "Flujos incorrectos",
+                  "CUTs en días distintos")
+)
+
+
+kable(tabla, align = c("l", "l", "l"), col.names = c("Dimensión", "Sub dimensión", "Datos a levantar")) %>%
+  kable_styling(full_width = F, bootstrap_options = c("striped", "hover")) %>%
+  collapse_rows(columns = 1:2, valign = "middle") %>%
+  row_spec(0, background = "#43418A", bold = TRUE, color = "white") %>%
+  row_spec(1:nrow(tabla), background = "#e2e2f9")
+```
+
+(*) 📌 Dimensión comprometida para Informe V de Tesis.
 
 ---
 
