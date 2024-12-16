@@ -1,8 +1,57 @@
+###0. Cargar paquetes y cosas-----
+
+### Limpiar enviroment
+rm(list=ls())
+
+
+### Cargar paquetes
+pacman::p_load(
+  tidyverse,
+  data.table,
+  tidylog,
+  haven,
+  ggplot2,
+  RColorBrewer,
+  sjPlot
+)
+
+### Usar el punto como decimal
 options(decimal.mark = ",")
 
-###1. PLOT DE BOTONES-----
+
+### Abrir base de poaradatos_ch
+paradatos_ch <- readRDS("paradatos_ch.RDS") 
+paradatos_cut <- readRDS("paradatos_cut.RDS") 
+
+### Crear tiempos CH
+tiempos_ch <- 
+  paradatos_ch %>% 
+  mutate(diferencia = as.numeric(diferencia),
+         hhsize2 = as.factor(hhsize2)) %>% 
+  group_by(interview__key,hhsize2,recol_ch_sexo,recol_ch_experiencia_ine,hay_0_14,hay_psdf,hay_trabaja, hay_estudia) %>% 
+  summarize(tiempo = sum(diferencia, na.rm = TRUE)) %>% 
+  ungroup()
+
+
+### Crear tiempos CUT
+tiempos_cut <- 
+  paradatos_cut %>% 
+  group_by(id_per,recol_cut_sexo,recol_cut_experiencia_ine,
+           noesyo_0_14, noesyo_psdf, noesyo_trabaja, noesyo_estudia) %>% 
+  summarize(tiempo = sum(diferencia, na.rm = TRUE)) %>% 
+  ungroup()
+
+
+### Abrir funciones
+source('processing/funciones.R')
+
+###1. Botones de duración-----
+### Abrir procesamiento de botones
+source('processing/botones.R')
+
+
 ####1.1 CH-----
-botones_ch <- 
+botones_ch <-
   recuento_ch %>%
   uni_fun(condicion_boton, rename_final = F) %>%
   filter(condicion_boton != 'Total') %>%
@@ -21,7 +70,7 @@ botones_ch <-
     panel.grid.minor = element_blank()
   ) +
   scale_y_continuous(
-    limits = c(0, 0.85), expand = c(0, 0), n.breaks = 10,
+    limits = c(0, 1.09), expand = c(0, 0), n.breaks = 10,
     labels = scales::percent_format(accuracy = 1, decimal.mark = ",")  # Cambiar el punto por la coma en el eje Y
   ) +
   scale_fill_manual(values = c("#4ab0c1", "#2d93ad", "#1B5868")) +
@@ -29,7 +78,7 @@ botones_ch <-
   xlab('') + ylab('')
 
 ####1.2 CUT-----
-botones_cut <- 
+botones_cut <-
   recuento_cut %>%
   uni_fun(condicion_boton, rename_final = F) %>%
   filter(condicion_boton != 'Total') %>%
@@ -48,7 +97,7 @@ botones_cut <-
     panel.grid.minor = element_blank()
   ) +
   scale_y_continuous(
-    limits = c(0, 0.85), expand = c(0, 0), n.breaks = 10,
+    limits = c(0, 1.09), expand = c(0, 0), n.breaks = 10,
     labels = scales::percent_format(accuracy = 1, decimal.mark = ",")  # Cambiar el punto por la coma en el eje Y
   ) +
   scale_fill_manual(values = c("#B7A0CD", "#8760ac", "#513A67")) +
@@ -56,7 +105,8 @@ botones_cut <-
   xlab('') + ylab('')
 
 
-####1.3 JUNTAR TODO-----
+####1.3 Juntar todo-----
+botones_enut <- 
 ggpubr::ggarrange(
   botones_ch, 
   botones_cut, 
@@ -65,6 +115,8 @@ ggpubr::ggarrange(
   ncol = 2, nrow = 1, 
   widths = c(1, 1.1)  # Ajustar la relación de ancho para agregar separación
 )
+
+
 
 
 ###2. TIEMPOS DE DURACIÓN-----
@@ -117,7 +169,7 @@ tiempos_por_modulo_ch <-
 #   xlab("Módulo") +
 #   ylab("Tiempo (min)")
 
-colores <- c(
+colores_ch <- c(
   "#b2e0e7",  # Color 1
   "#8cd4de",  # Color 2
   "#66c8d5",  # Color 3
@@ -128,6 +180,8 @@ colores <- c(
 )
 
 # Creamos el gráfico
+####boxplot por módulo
+plot_ch_modulo <- 
 ggplot(tiempos_por_modulo_ch, aes(x = factor(modulo, levels = 1:7,
                                           labels = c(
                                             "Módulo H",
@@ -140,7 +194,7 @@ ggplot(tiempos_por_modulo_ch, aes(x = factor(modulo, levels = 1:7,
                                y = tiempo,
                                fill = factor(modulo))) +  # Usamos modulo para el relleno
   geom_boxplot() +
-  scale_fill_manual(values = colores) +  # Aplicamos la paleta de colores
+  scale_fill_manual(values = colores_ch) +  # Aplicamos la paleta de colores
   theme_bw() +
   theme(
     axis.text.x = element_text(size = 9, angle = 45, hjust = 1),
@@ -172,54 +226,87 @@ tiempo_ch <- ggplot() +
              color = "black",linetype="dashed") +
   annotate("label", x = promedio_ch + 19.5, y = 4000,
            label = paste0(bquote("x\u0305"), " total = ", 
-                          format(round(promedio_ch, digits = 2), decimal.mark = ",")),
+                          # format(round(promedio_ch, digits = 2), decimal.mark = ",")),
+                          decimal_a_minutos(round(promedio_ch, digits = 2)), ' min'), 
            size = 3)
-
-revisar <- 
-tiempos_ch %>% 
-  left_join(enut %>% select(interview__key,n_integrantes = hhsize), by = 'interview__key') %>% 
-  mutate(n_integrantes = case_when(
-    n_integrantes == 1 ~ "1 Integrante",
-    n_integrantes == 2 ~ "2 Integrantes",
-    n_integrantes == 3 ~ "3 Integrantes",
-    n_integrantes == 4 ~ "4 Integrantes",
-    n_integrantes >= 5 ~ "5 Integrantes o más"
-  ))
-  
-
-
-ggplot(revisar, aes(x = tiempo, fill = n_integrantes)) +
-  geom_histogram(position = "identity", alpha = 0.5, bins = 10) +
-  facet_wrap(~ n_integrantes) +
-  theme_bw() +
-  labs(
-    title = "Histogramas de Tiempo por Número de Integrantes",
-    x = "Tiempo (minutos)",
-    y = "Conteo",
-    fill = "Número de Integrantes"
-  )
 
 tiempos_total_ch <- tiempos_ch %>%
   mutate(tiempo = as.numeric(tiempo)) %>%  # Convertir 'tiempo' a numeric
+  group_by(hhsize2) %>% 
   summarize(
-    'Mínimo' = min(tiempo, na.rm = TRUE),
-    'Mediana' = median(tiempo, na.rm = TRUE),
-    'Promedio' = mean(tiempo, na.rm = TRUE),
-    'Percentil 01' = quantile(tiempo, 0.01, na.rm = TRUE),
-    'Percentil 05' = quantile(tiempo, 0.05, na.rm = TRUE),
-    'Percentil 10' = quantile(tiempo, 0.1, na.rm = TRUE),
-    'Percentil 25' = quantile(tiempo, 0.25, na.rm = TRUE),
-    'Percentil 33' = quantile(tiempo, 0.33, na.rm = TRUE),
-    'Percentil 60' = quantile(tiempo, 0.60, na.rm = TRUE),
-    'Percentil 75' = quantile(tiempo, 0.75, na.rm = TRUE),
-    'Percentil 90' = quantile(tiempo, 0.90, na.rm = TRUE),
-    'Percentil 95' = quantile(tiempo, 0.95, na.rm = TRUE),
-    'Percentil 99' = quantile(tiempo, 0.99, na.rm = TRUE),
-    'Máximo' = max(tiempo, na.rm = TRUE),
+    'Mínimo' = decimal_a_minutos(min(tiempo, na.rm = TRUE)),
+    'Mediana' = decimal_a_minutos(median(tiempo, na.rm = TRUE)),
+    'Promedio' = decimal_a_minutos(mean(tiempo, na.rm = TRUE)),
+    'Percentil 01' = decimal_a_minutos(quantile(tiempo, 0.01, na.rm = TRUE)),
+    'Percentil 05' = decimal_a_minutos(quantile(tiempo, 0.05, na.rm = TRUE)),
+    'Percentil 10' = decimal_a_minutos(quantile(tiempo, 0.1, na.rm = TRUE)),
+    'Percentil 25' = decimal_a_minutos(quantile(tiempo, 0.25, na.rm = TRUE)),
+    'Percentil 33' = decimal_a_minutos(quantile(tiempo, 0.33, na.rm = TRUE)),
+    'Percentil 60' = decimal_a_minutos(quantile(tiempo, 0.60, na.rm = TRUE)),
+    'Percentil 75' = decimal_a_minutos(quantile(tiempo, 0.75, na.rm = TRUE)),
+    'Percentil 90' = decimal_a_minutos(quantile(tiempo, 0.90, na.rm = TRUE)),
+    'Percentil 95' = decimal_a_minutos(quantile(tiempo, 0.95, na.rm = TRUE)),
+    'Percentil 99' = decimal_a_minutos(quantile(tiempo, 0.99, na.rm = TRUE)),
+    'Máximo' = decimal_a_minutos(max(tiempo, na.rm = TRUE)),
     'Des.Est' = sd(tiempo, na.rm = TRUE),
     'N de Casos' = n()
-  ) %>%
-  pivot_longer(cols = everything(), names_to = "Medida", values_to = "Valor")
+  ) 
+
+writexl::write_xlsx(tiempos_total_ch, 'tiempos_ch_n_integrantes')
+
+#### Regresión -----
+
+lm_ch <- tiempos_ch %>% 
+  filter(!is.na(recol_ch_experiencia_ine)) %>%
+  lm(tiempo ~ hhsize2 + recol_ch_experiencia_ine + hay_0_14 + hay_psdf + hay_trabaja, data = .)
+
+summary(lm_ch)
+
+resumen <- broom::tidy(lm_ch) %>% 
+  mutate(estimado_minutos = map_chr(estimate, decimal_a_minutos), .after = estimate)
+
+r2_value <- round(summary(lm_ch)$r.squared, 2)
+
+plot_model(lm_ch, vline.color = "#2d93ad", value.offset = .3) +
+  labs(y = "Coeficientes ajustados en minutos", x = "Variables predictoras") +
+  labs(title = NULL) +
+  theme_bw(base_size = 11)+
+  theme(
+    legend.key.height = unit(1, "cm"),
+    legend.text = element_text(size = 9, family = "Arial"),
+    legend.position = "none",
+    axis.text.x = element_text(size = 10, family = "Arial"),
+    axis.text.y = element_text(size = 11, family = "Arial"),
+    plot.caption = element_text(size = 9, family = "Arial"),
+    panel.grid.minor = element_blank()
+  ) +
+  geom_text(
+    aes(label = paste(resumen$estimado_minutos[-1],'***')),  # Ajusta las coordenadas según necesites
+    size = 4.5,   # Tamaño de la etiqueta
+    hjust = 0.2,  # Ajuste horizontal para las etiquetas (similar a la posición de los valores)
+    vjust = -0.5,  # Ajuste vertical para que no se sobrepongan con las líneas
+    family = "Arial"
+  ) +
+  labs(caption = glue::glue(
+    "Todos los predictores tienen p-valor < 5%\n",
+    "{expression(R^2)} = {r2_value}"
+  )
+  )
+  # labs(caption = bquote(paste("R"^2, " = ", .(r2_value)))) +
+
+
+
+tiempo_neto <- 
+  paradatos_ch %>% 
+  mutate(diferencia = as.numeric(diferencia)) %>% 
+  group_by(interview__key, modulo, hhsize, sdt_cd_ch) %>% 
+  summarize(conteo = n(),
+            tiempo = sum(diferencia, na.rm = T)) %>% 
+  ungroup() %>% 
+  mutate(neto = tiempo/conteo)
+
+
+
 
 ####2.2 CUT-----
 
@@ -304,37 +391,26 @@ ggplot(tiempos_por_modulo_cut, aes(x = factor(modulo, levels = 1:11,
   xlab("") +
   ylab("Tiempo (min)")
 
-
-
-
-
-
-
-
-
-
-
 tiempos_total_cut <- tiempos_cut %>%
   mutate(tiempo = as.numeric(tiempo)) %>%  # Convertir 'tiempo' a numeric
   summarize(
-    'Mínimo' = min(tiempo, na.rm = TRUE),
-    'Mediana' = median(tiempo, na.rm = TRUE),
-    'Promedio' = mean(tiempo, na.rm = TRUE),
-    'Percentil 01' = quantile(tiempo, 0.01, na.rm = TRUE),
-    'Percentil 05' = quantile(tiempo, 0.05, na.rm = TRUE),
-    'Percentil 10' = quantile(tiempo, 0.1, na.rm = TRUE),
-    'Percentil 25' = quantile(tiempo, 0.25, na.rm = TRUE),
-    'Percentil 33' = quantile(tiempo, 0.33, na.rm = TRUE),
-    'Percentil 60' = quantile(tiempo, 0.60, na.rm = TRUE),
-    'Percentil 75' = quantile(tiempo, 0.75, na.rm = TRUE),
-    'Percentil 90' = quantile(tiempo, 0.90, na.rm = TRUE),
-    'Percentil 95' = quantile(tiempo, 0.95, na.rm = TRUE),
-    'Percentil 99' = quantile(tiempo, 0.99, na.rm = TRUE),
-    'Máximo' = max(tiempo, na.rm = TRUE),
+    'Mínimo' = decimal_a_minutos(min(tiempo, na.rm = TRUE)),
+    'Mediana' = decimal_a_minutos(median(tiempo, na.rm = TRUE)),
+    'Promedio' = decimal_a_minutos(mean(tiempo, na.rm = TRUE)),
+    'Percentil 01' = decimal_a_minutos(quantile(tiempo, 0.01, na.rm = TRUE)),
+    'Percentil 05' = decimal_a_minutos(quantile(tiempo, 0.05, na.rm = TRUE)),
+    'Percentil 10' = decimal_a_minutos(quantile(tiempo, 0.1, na.rm = TRUE)),
+    'Percentil 25' = decimal_a_minutos(quantile(tiempo, 0.25, na.rm = TRUE)),
+    'Percentil 33' = decimal_a_minutos(quantile(tiempo, 0.33, na.rm = TRUE)),
+    'Percentil 60' = decimal_a_minutos(quantile(tiempo, 0.60, na.rm = TRUE)),
+    'Percentil 75' = decimal_a_minutos(quantile(tiempo, 0.75, na.rm = TRUE)),
+    'Percentil 90' = decimal_a_minutos(quantile(tiempo, 0.90, na.rm = TRUE)),
+    'Percentil 95' = decimal_a_minutos(quantile(tiempo, 0.95, na.rm = TRUE)),
+    'Percentil 99' = decimal_a_minutos(quantile(tiempo, 0.99, na.rm = TRUE)),
+    'Máximo' = decimal_a_minutos(max(tiempo, na.rm = TRUE)),
     'Des.Est' = sd(tiempo, na.rm = TRUE),
     'N de Casos' = n()
-  ) %>%
-  pivot_longer(cols = everything(), names_to = "Medida", values_to = "Valor")
+  )
 
 promedio_cut <- tiempos_cut %>%
   mutate(tiempo = as.numeric(tiempo)) %>%  # Convertir 'tiempo' a numeric
@@ -357,11 +433,12 @@ ggplot() +
   # scale_x_continuous(expand = c(0, 0), limits = c(0, 60)) +
   ylab('Frecuencia') +
   xlab('') +
-  labs(caption = paste0("N total de CH = ", prettyNum(nrow(tiempos_cut), big.mark = ".", decimal.mark = ',',scientific = FALSE))) +
+  labs(caption = paste0("N total de CUT = ", prettyNum(nrow(tiempos_cut), big.mark = ".", decimal.mark = ',',scientific = FALSE))) +
   geom_vline(aes(xintercept = promedio_cut),
              color = "black",linetype="dashed") +
   annotate("label", x = promedio_cut+19.5, y = 4000,
            label =
              paste0(bquote("x\u0305"), " total = ", 
-                    format(round(promedio_cut, digits = 2), decimal.mark = ","))
+                    decimal_a_minutos(round(promedio_cut, digits = 2)), ' min'),
+           size = 3
   )

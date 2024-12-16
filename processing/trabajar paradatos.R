@@ -12,51 +12,6 @@ pacman::p_load(
   RColorBrewer
 )
 
-###0.2 Funciones----
-uni_fun <- function(df, x, rename_final = TRUE) {
-  col_name <- as.character(substitute(x))
-  question_label <- attributes(df[[col_name]])$label
-  
-  # Fallback to col_name if question_label is NULL
-  if (is.null(question_label)) {
-    question_label <- col_name
-  }
-  
-  resultado <- tibble(!!col_name := levels(forcats::as_factor(unique(df[[col_name]])))) %>% 
-    add_row(!!col_name := "Total") %>%
-    left_join(
-      df %>%
-        tidyr::drop_na({{x}}) %>% 
-        mutate({{x}} := forcats::as_factor({{x}})) %>%
-        dplyr::count({{x}}) %>%
-        mutate(Porcentaje = n / sum(n)) %>%
-        dplyr::rename(Frecuencia = n) %>%
-        janitor::adorn_totals("row"),
-      by = col_name
-    ) %>%
-    mutate(across(matches("Frecuencia|Porcentaje"), ~ ifelse(is.na(.), 0, .)))
-  
-  if (rename_final) {
-    resultado <- resultado %>% rename(!!question_label := {{x}})
-  }
-  
-  return(resultado)
-}
-
-# Aclarar el color
-lighten_color <- function(color, factor) {
-  rgb_values <- col2rgb(color)  # Convertir a RGB
-  rgb_values_light <- pmin(rgb_values + (255 - rgb_values) * factor, 255)  # Aclarar
-  rgb(rgb_values_light[1] / 255, rgb_values_light[2] / 255, rgb_values_light[3] / 255)  # Convertir a hex
-}
-
-darken_color <- function(color, factor) {
-  rgb_values <- col2rgb(color)  # Convertir a RGB
-  rgb_values_dark <- pmax(rgb_values - rgb_values * factor, 0)  # Oscurecer
-  rgb(rgb_values_dark[1] / 255, rgb_values_dark[2] / 255, rgb_values_dark[3] / 255)  # Convertir a hex
-}
-
-
 
 ###1. Abrir Paradatos----
 paradatos <- readRDS('//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.1_integrar/data/otros/paradata_tesis.RDS') %>% 
@@ -71,17 +26,80 @@ enut <- readRDS("//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.1_integrar/d
     noesyo_0_14 = sum(c3 <= 14 & d8!=1, na.rm = TRUE) - (c3 <= 14 & d8!=1),
     noesyo_psdf = sum(d8 == 1, na.rm = TRUE) - (d8 == 1),
     noesyo_trabaja = sum(v4, na.rm = TRUE) - (v4 == 1),
+    noesyo_estudia = sum(e4 == 1, na.rm = TRUE) - (e4==1),
+    hay_0_14 = as.numeric(sum(c3 <= 14 & d8!=1, na.rm = TRUE) > 1),
+    hay_psdf = as.numeric(sum(d8 == 1, na.rm = TRUE) > 1),
+    hay_trabaja = as.numeric(sum(v4, na.rm = TRUE) > 1),
+    hay_estudia = sum(e4 == 1, na.rm = TRUE),
     idoneo = as.numeric(informante_idoneo== as.numeric(sub(".*-(\\d+)$", "\\1", id_per)))
     ) %>%
   ungroup() %>% 
+  group_by(interview__key) %>% mutate(hhsize = n()) %>% ungroup() %>% 
+  mutate(hhsize2 = case_when(
+    hhsize == 1 ~ 1,
+    hhsize == 2 ~ 2,
+    hhsize == 3 ~ 3,
+    hhsize == 4 ~ 4,
+    hhsize == 5 ~ 5,
+    hhsize >= 6 ~ 6,
+  ),
+  hhsize2 = haven::labelled(
+    hhsize2,
+    labels = c("1 integrante" = 1,
+               "2 integrantes" = 2,
+               "3 integrantes" =  3,
+               "4 integrantes" = 4,
+               "5 integrantes" =  5,
+               "6 o más integrantes" = 6),
+    label = "N Integrantes del hogar"),
+  hay_0_14 = haven::labelled(
+    hay_0_14,
+    labels = c("Sí hay 0-14 años" = 1,
+               "No hay 0-14 años" = 0),
+    label = "Hay personas de 0-14 años"),
+  hay_psdf = haven::labelled(
+    hay_psdf,
+    labels = c("Sí hay PSDF" = 1,
+               "No hay PSDF" = 0),
+    label = "Hay PSDF"),
+  hay_trabaja = haven::labelled(
+    hay_trabaja,
+    labels = c("Sí hay personas ocupadas" = 1,
+               "No hay personas ocupadas" = 0),
+    label = "Hay personas ocupadas"),
+  hay_estudia = haven::labelled(
+    hay_estudia,
+    labels = c("Sí hay personas estudiando" = 1,
+               "No hay personas estudiando" = 0),
+    label = "Hay personas estudiando"),
+  hhsize2 = haven::as_factor(hhsize2),
+  hay_0_14 = haven::as_factor(hay_0_14),
+  hay_psdf = haven::as_factor(hay_psdf),
+  hay_trabaja = haven::as_factor(hay_trabaja)) %>% 
   select(interview__key,id_per2, 
-         hhsize,
+         hhsize, hhsize2,
          noesyo_0_14,
          noesyo_psdf,noesyo_trabaja,
+         noesyo_estudia,
+         hay_0_14,hay_psdf,hay_trabaja,
+         hay_estudia,
          idoneo)
 
 
-####2.1 Parad_ch----
+paradatos <- 
+  paradatos %>% 
+  left_join(enut %>% select(interview__key,hhsize, hhsize2,hay_0_14,hay_psdf,hay_trabaja, hay_estudia), by = 'interview__key') %>% 
+  left_join(enut %>% select(id_per2,noesyo_0_14,
+                            noesyo_psdf,noesyo_trabaja,
+                            noesyo_estudia,
+                            idoneo), by = 'id_per2') %>% 
+  mutate(correlativo = paste(interview__key,order, sep = '-')) %>% 
+  distinct(correlativo, .keep_all =T) %>% 
+  select(-correlativo)
+
+# test <- paradatos2 %>% filter(interview__key=='00-02-57-10')
+
+####2.1 Procesamiento: Parad_ch----
 paradatos_ch <- paradatos[role == 1 & event == "AnswerSet" & cuestionario == 'ch' & sdt_cd_ch==11][,
                                                                                                    diferencia := shift(hora_real, type = "lead", fill = hora_real[.N]) - hora_real, 
                                                                                                    by = interview__id][
@@ -107,54 +125,16 @@ paradatos_ch[, dia_dif := fifelse(fecha != fecha_antes, 1, 0)]
 paradatos_ch[, dia_dif_mismo := fifelse(fecha == fecha_antes, 1, 0)]
 paradatos_ch[, diferencia := fifelse(conteo_i == 1, as.difftime(0, units = "mins"), diferencia)]
 paradatos_ch[, diferencia := fifelse(dia_dif_for == 1, as.difftime(0, units = "mins"), diferencia)]
-paradatos_ch[, diferencia := fifelse(dia_dif_rew == 1, as.difftime(0, units = "mins"), diferencia)]
+paradatos_ch[, diferencia := fifelse(diferencia < 0, as.difftime(0, units = "mins"), diferencia)]
+# paradatos_ch[, diferencia := fifelse(dia_dif_rew == 1, as.difftime(0, units = "mins"), diferencia)]
 
 ####BOTONES: CONTAR CUÁNTOS CUÁLES SE APLICARON DE FORMA CONSECUTIVA
 paradatos_ch[, var_antes := shift(var, type = "lag"), by = interview__key]
 paradatos_ch[, conteo_dif_termino := fifelse(var=='termino_ch', max(conteo_i)-conteo_i,NA), by = interview__key]
 
-####2.1.1 tiempos----
-tiempos_ch <- 
-  paradatos_ch %>% 
-  group_by(interview__key) %>% 
-  summarize(tiempo = sum(diferencia, na.rm = TRUE)) %>% 
-  ungroup()
-
-tiempos_total_ch <- 
-  tiempos_ch %>% 
-  summarize(min = min(tiempo, na.rm = TRUE),
-            mediana = median(tiempo, na.rm = TRUE),
-            promedio = mean(tiempo, na.rm = TRUE),
-            p01 = quantile(tiempo, 0.01, na.rm = TRUE),
-            p05 = quantile(tiempo, 0.05, na.rm = TRUE),
-            p10 = quantile(tiempo, 0.1, na.rm = TRUE),
-            p25 = quantile(tiempo, 0.25, na.rm = TRUE),
-            p33 = quantile(tiempo, 0.33, na.rm = TRUE),
-            p60 = quantile(tiempo, 0.60, na.rm = TRUE),
-            p75 = quantile(tiempo, 0.75, na.rm = TRUE),
-            p90 = quantile(tiempo, 0.90, na.rm = TRUE),
-            p95 = quantile(tiempo, 0.95, na.rm = TRUE),
-            p99 = quantile(tiempo, 0.99, na.rm = TRUE),
-            max = max(tiempo, na.rm = T),
-            sd = sd(tiempo, na.rm = TRUE),
-            n = n())
-
-promedio_ch <- 
-  paste0("Promedios CH:","\n",
-         round(tiempos_total_ch$promedio,digits=2),"min")
 
 
-
-  
-####2.1.2 botones----
-
-####BOTONES: CONTAR CUÁNTOS SE APLICARON MÁS DE UNA VEZ (INICIO Y TERMINO)
-botones_ch <- 
-  paradatos_ch %>% 
-  filter(modulo == 'horas') %>% 
-  select(interview__key,order,hora_real,parameters,var,sm,sdt_cd_ch,sdt_cd_cut,
-         cdf,fecha,conteo_i,conteo_dif_termino) 
-
+### Agregar datos sobre encuestador
 
 hog_dic23 <- readRDS("//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.6_ponderar/cdf/intermedias/cdf_hog_inicial_dic23.RDS") %>%
   select(interview__key,
@@ -163,68 +143,40 @@ hog_dic23 <- readRDS("//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.6_ponde
          recol_ch_nivel_educacional) %>%     
   mutate(recol_ch_experiencia_ine = haven::labelled(
     recol_ch_experiencia_ine,
-    labels = c("Sí" = 1, 
-               "No" = 0),
+    labels = c("Con exp previa INE" = 1, 
+               "Sin exp previa INE" = 0),
     label = "Experiencia previa INE"))
-  
-
-recuento_ch <- 
-  botones_ch %>% 
-  filter(var %in% c("inicio_ch", "termino_ch")) %>%
-  group_by(interview__key, var) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  pivot_wider(names_from = var, values_from = count, values_fill = 0
-              ) %>% 
-  left_join(paradatos_ch %>% distinct(interview__key, .keep_all =T) %>% select(interview__key, sdt_cd_ch)) %>% 
-  left_join(hog_dic23, by = 'interview__key')
 
 
-recuento_ch <- 
-  recuento_ch %>% 
-  bind_rows(tiempos_ch %>% filter(!interview__key %in% recuento_ch$interview__key) %>%  select(interview__key)) %>% 
-  ungroup() %>% 
-  # mutate(
-    # condicion_boton = if_else(inicio_ch==1 & termino_ch==1, 1,0))
-  mutate(
-    condicion_boton = case_when(
-           is.na(inicio_ch) & is.na(termino_ch) ~ 99,
-           inicio_ch==1 & termino_ch==1 ~ 1,
-           TRUE ~ 0
-         ),
-         condicion_boton = haven::labelled(condicion_boton,
-                         labels = c("Apretados correctamente" = 1, 
-                                    "Apretados más de una vez" = 0,
-                                    "No se apretó el botón" = 99),
-                         label = "Veces que ha sido apretado el botón de Inicio y Termino")
-         ) 
+paradatos_ch <- 
+  paradatos_ch %>% left_join(hog_dic23, by = 'interview__key')
 
 
-
-# saveRDS(recuento_ch,'output/recuento_ch.RDS')
-
-
-
-# recuento_ch2 <- 
-#   recuento_ch %>% 
-#   left_join(botones_ch %>% filter(var=='inicio_ch' & interview__key %in% recuento$interview__key[recuento$condicion_boton==1]) %>% select(interview__key,inicio_ch_hora = hora_real, inicio_order = order, inicio_conteo_i = conteo_i)) %>% 
-#   left_join(botones_ch %>% filter(var=='termino_ch' & interview__key %in% recuento$interview__key[recuento$condicion_boton==1]) %>% select(interview__key,termino_ch_hora = hora_real, termino_order = order, termino_conteo_i = conteo_i,conteo_dif_termino)
-#             
-#   ) %>% 
-#   relocate(termino_ch_hora, .after = inicio_ch_hora) %>% 
-#   relocate(termino_order, .after = inicio_order)
-
-
-# recuento2 <- recuento %>% 
-#   mutate(condicion_termino_first = if_else(termino_conteo_i < inicio_conteo_i,1,0),
-#          diferencia_n = termino_conteo_i - inicio_conteo_i,
-#          diferencia = if_else(diferencia_n <= 8,1,0)
-#          ) 
+####2.1.1 tiempos----
 # 
-# ver <- paradatos_ch %>% filter(interview__key=='01-22-41-47')
-
-# %>% 
-#   filter(diferencia==0) %>% 
-#   arrange(diferencia_n)
+# 
+# tiempos_total_ch <- 
+#   tiempos_ch %>% 
+#   summarize(min = min(tiempo, na.rm = TRUE),
+#             mediana = median(tiempo, na.rm = TRUE),
+#             promedio = mean(tiempo, na.rm = TRUE),
+#             p01 = quantile(tiempo, 0.01, na.rm = TRUE),
+#             p05 = quantile(tiempo, 0.05, na.rm = TRUE),
+#             p10 = quantile(tiempo, 0.1, na.rm = TRUE),
+#             p25 = quantile(tiempo, 0.25, na.rm = TRUE),
+#             p33 = quantile(tiempo, 0.33, na.rm = TRUE),
+#             p60 = quantile(tiempo, 0.60, na.rm = TRUE),
+#             p75 = quantile(tiempo, 0.75, na.rm = TRUE),
+#             p90 = quantile(tiempo, 0.90, na.rm = TRUE),
+#             p95 = quantile(tiempo, 0.95, na.rm = TRUE),
+#             p99 = quantile(tiempo, 0.99, na.rm = TRUE),
+#             max = max(tiempo, na.rm = T),
+#             sd = sd(tiempo, na.rm = TRUE),
+#             n = n())
+# 
+# promedio_ch <- 
+#   paste0("Promedios CH:","\n",
+#          round(tiempos_total_ch$promedio,digits=2),"min")
 
 ####2.2 Parad_cut----
 
@@ -263,7 +215,8 @@ paradatos_cut[, dia_dif := fifelse(fecha != fecha_antes, 1, 0)]
 paradatos_cut[, dia_dif_mismo := fifelse(fecha == fecha_antes, 1, 0)]
 paradatos_cut[, diferencia := fifelse(conteo_i == 1, as.difftime(0, units = "mins"), diferencia)]
 paradatos_cut[, diferencia := fifelse(dia_dif_for == 1, as.difftime(0, units = "mins"), diferencia)]
-paradatos_cut[, diferencia := fifelse(dia_dif_rew == 1, as.difftime(0, units = "mins"), diferencia)]
+paradatos_cut[, diferencia := fifelse(diferencia < 0, as.difftime(0, units = "mins"), diferencia)]
+# paradatos_cut[, diferencia := fifelse(dia_dif_rew == 1, as.difftime(0, units = "mins"), diferencia)]
 
 
 ####BOTONES: CONTAR CUÁNTOS SE APLICARON MÁS DE UNA VEZ (INICIO Y TERMINO)
@@ -271,56 +224,7 @@ paradatos_cut[, diferencia := fifelse(dia_dif_rew == 1, as.difftime(0, units = "
 paradatos_cut[, var_antes := shift(var, type = "lag"), by = id_per2]
 paradatos_cut[, conteo_dif_termino := fifelse(var=='termino_ch', max(conteo_i)-conteo_i,NA), by = id_per2]
 
-####2.2.1 tiempos----
-tiempos_cut <- 
-  paradatos_cut %>% 
-  group_by(id_per) %>% 
-  summarize(tiempo = sum(diferencia, na.rm = TRUE)) %>% 
-  ungroup()
-
-tiempos_total_cut <- 
-  tiempos_cut %>% 
-  summarize(min = min(tiempo, na.rm = TRUE),
-            mediana = median(tiempo, na.rm = TRUE),
-            promedio = mean(tiempo, na.rm = TRUE),
-            p01 = quantile(tiempo, 0.01, na.rm = TRUE),
-            p05 = quantile(tiempo, 0.05, na.rm = TRUE),
-            p10 = quantile(tiempo, 0.1, na.rm = TRUE),
-            p25 = quantile(tiempo, 0.25, na.rm = TRUE),
-            p33 = quantile(tiempo, 0.33, na.rm = TRUE),
-            p60 = quantile(tiempo, 0.60, na.rm = TRUE),
-            p75 = quantile(tiempo, 0.75, na.rm = TRUE),
-            p90 = quantile(tiempo, 0.90, na.rm = TRUE),
-            p95 = quantile(tiempo, 0.95, na.rm = TRUE),
-            p99 = quantile(tiempo, 0.99, na.rm = TRUE),
-            max = max(tiempo, na.rm = T),
-            sd = sd(tiempo, na.rm = TRUE),
-            n = n())
-
-promedio_cut <- 
-  paste0("Promedios CUT:","\n",
-         round(tiempos_total_cut$promedio,digits=2),"min")
-
-
-
-# +
-#   annotate("label", x = unique(cut_plot_reg$promedio[cut_plot_reg$region=="Total"])+10.5, y = 4.5,
-#            label =   
-#              paste0(bquote("x\u0305")," total = ", round(unique(cut_plot_reg$promedio[cut_plot_reg$region=="Total"]),digits=2)),
-#            size = 3)
-
-
-
-
-
-
-####2.2.2 botones----
-botones_cut <- 
-  paradatos_cut %>% 
-  filter(modulo == 'horas') %>% 
-  select(id_per2,id_per,order,hora_real,parameters,var,sm,sdt_cd_ch,sdt_cd_cut,
-         cdf,fecha,conteo_i,conteo_dif_termino) 
-
+ ### Agregar datos sobre encuestador
 
 per_dic23 <- readRDS("//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.6_ponderar/cdf/intermedias/cdf_per_inicial_dic23.RDS") %>%
   select(id_per,
@@ -329,49 +233,52 @@ per_dic23 <- readRDS("//Buvmfswinp01/SEET_ENUT/ii_enut/5_procesamiento/5.6_ponde
          recol_cut_nivel_educacional) %>% 
   mutate(recol_cut_experiencia_ine = haven::labelled(
     recol_cut_experiencia_ine,
-     labels = c("Sí" = 1, 
+    labels = c("Sí" = 1, 
                "No" = 0),
     label = "Experiencia previa INE"))
 
+paradatos_cut <- 
+  paradatos_cut %>% left_join(per_dic23, by = 'id_per')
 
-recuento_cut <- 
-  botones_cut %>% 
-  filter(var %in% c("inicio_cut", "termino_cut")) %>%
-  group_by(id_per2, id_per,var) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  pivot_wider(names_from = var, values_from = count, values_fill = 0
-  ) %>% 
-  left_join(paradatos_cut %>% distinct(id_per2, .keep_all =T) %>% select(id_per2, sdt_cd_cut)) %>% 
-  left_join(per_dic23, by = 'id_per')
-
-
-recuento_cut <- 
-  recuento_cut %>% 
-  bind_rows(tiempos_cut %>% filter(!id_per %in% recuento_cut$id_per) %>%  select(id_per)) %>% 
-  ungroup() %>% 
-  # mutate(
-  # condicion_boton = if_else(inicio_ch==1 & termino_ch==1, 1,0))
-  mutate(
-    condicion_boton = case_when(
-      is.na(inicio_cut) ~ 99,
-      is.na(termino_cut) ~ 99,
-      inicio_cut==1 & termino_cut==1 ~ 1,
-      TRUE ~ 0
-    ),
-    condicion_boton = haven::labelled(condicion_boton,
-                                      labels = c("Apretados correctamente" = 1, 
-                                                 "Apretados más de una vez" = 0,
-                                                 "No se apretó el botón" = 99),
-                                      label = "Veces que ha sido apretado el botón de Inicio y Termino")
-  ) 
-
-
-consolidado_tiempos <- 
-dput(bind_rows(tiempos_total_ch %>% mutate(encuesta = 'CH', .before=1),
-               tiempos_total_ch %>% mutate(encuesta = 'CUT', .before=1))) 
-
-
-writexl::write_xlsx(consolidado_tiempos,"consolidado_tiempos.xlsx")
+####2.2.1 tiempos----
+# tiempos_cut <- 
+#   paradatos_cut %>% 
+#   group_by(id_per) %>% 
+#   summarize(tiempo = sum(diferencia, na.rm = TRUE)) %>% 
+#   ungroup()
+# 
+# tiempos_total_cut <- 
+#   tiempos_cut %>% 
+#   summarize(min = min(tiempo, na.rm = TRUE),
+#             mediana = median(tiempo, na.rm = TRUE),
+#             promedio = mean(tiempo, na.rm = TRUE),
+#             p01 = quantile(tiempo, 0.01, na.rm = TRUE),
+#             p05 = quantile(tiempo, 0.05, na.rm = TRUE),
+#             p10 = quantile(tiempo, 0.1, na.rm = TRUE),
+#             p25 = quantile(tiempo, 0.25, na.rm = TRUE),
+#             p33 = quantile(tiempo, 0.33, na.rm = TRUE),
+#             p60 = quantile(tiempo, 0.60, na.rm = TRUE),
+#             p75 = quantile(tiempo, 0.75, na.rm = TRUE),
+#             p90 = quantile(tiempo, 0.90, na.rm = TRUE),
+#             p95 = quantile(tiempo, 0.95, na.rm = TRUE),
+#             p99 = quantile(tiempo, 0.99, na.rm = TRUE),
+#             max = max(tiempo, na.rm = T),
+#             sd = sd(tiempo, na.rm = TRUE),
+#             n = n())
+# 
+# promedio_cut <- 
+#   paste0("Promedios CUT:","\n",
+#          round(tiempos_total_cut$promedio,digits=2),"min")
+# 
+# 
+# 
+# 
+# consolidado_tiempos <- 
+# dput(bind_rows(tiempos_total_ch %>% mutate(encuesta = 'CH', .before=1),
+#                tiempos_total_ch %>% mutate(encuesta = 'CUT', .before=1))) 
+# 
+# 
+# writexl::write_xlsx(consolidado_tiempos,"consolidado_tiempos.xlsx")
 
 # agregar 0-4
 # agregar 5-14
